@@ -31,8 +31,8 @@
 
 
 typedef struct game {
-    int board[BOARD_WIDTH][BOARD_HEIGHT];
-    int currentPlayer;
+    int board[BOARD_WIDTH][BOARD_HEIGHT];  // 0=empty, 1=X 2=O
+    int currentPlayer;                     // 1=X, 2=O
 } Game;
 
 Game game;
