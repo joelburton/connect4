@@ -1,3 +1,29 @@
+/* Connect 4
+ *
+ * Terminal 2-player Connect Four game.
+ *
+ * Written as example for an Intro to C course; teaches arrays, looping,
+ * and basic CPP macros.
+ *
+ * Raises warnings if not compiled with a C89 or newer compiler.
+ * Tested with GCC 5.1.
+ *
+ * Copyright (C) 2015 Joel Burton <joel@joelburton.com>.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -44,7 +70,7 @@ void showBoard()
     for (int x = 0; x < BOARD_WIDTH; x++)
         printf("==");
 
-    puts("=");
+    puts("=");   // adds \n
 
     // draw column numbers
     putchar(' ');
@@ -103,6 +129,13 @@ void makeMove(int col)
 
 int findWinner()
 {
+    // To find a winner, it's not necessary to scan from every cell --
+    // we only have to scan from the bottom left (x=0, y=0) up to (x=4, y=4) --
+    // since we'll look at that cell and three up/right to find horiz,
+    // vertical, or diagonal "/" matches (we look at 5*5=25 cells, not 8*8=64,
+    // plus we get to skip bounds checks if we tried to go up/right off the
+    // edge).
+
     for (int y = 0; y < BOARD_HEIGHT - 3; y++) {
         for (int x = 0; x < BOARD_WIDTH - 3; x++) {
             if (!game.board[x][y]) continue;
@@ -128,6 +161,11 @@ int findWinner()
                 return game.board[x][y];
             }
         }
+
+        // For diagonal "\" matches, we scan from (x=3, y=0) up to (x=7, y=4);
+        // that will let us check all possible wins positioning left and up
+        // from that cell (again, we look at 5*5=25, not 8*8=64, plus we get
+        // to skip bounds checks)
 
         for (int x = 3; x < BOARD_WIDTH; x++) {
             if (!game.board[x][y]) continue;
