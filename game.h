@@ -1,0 +1,7 @@
+#ifndef CONNECT4_GAME_H
+#define CONNECT4_GAME_H
+
+#define BOARD_WIDTH 8
+#define BOARD_HEIGHT 8
+
+#endif //CONNECT4_GAME_H
