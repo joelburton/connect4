@@ -16,13 +16,10 @@ Game game;
 
 void startGame()
 {
-    int x, y;
-
-    for (y = 0; y < BOARD_HEIGHT; y++) {
-        for (x = 0; x < BOARD_WIDTH; x++) {
+    for (int y = 0; y < BOARD_HEIGHT; y++)
+        for (int x = 0; x < BOARD_WIDTH; x++)
             game.board[x][y] = 0;
-        }
-    }
+
     game.currentPlayer = 1;
 }
 
@@ -31,38 +28,30 @@ void startGame()
 
 void showBoard()
 {
-    int x, y;
+    putchar('\n');
 
-    for (y = BOARD_HEIGHT - 1; y >= 0; y--) {
+    for (int y = BOARD_HEIGHT - 1; y >= 0; y--) {
         putchar('|');
-        for (x = 0; x < BOARD_WIDTH; x++) {
-
-            switch (game.board[x][y]) {
-                case 1:
-                    putchar('X');
-                    break;
-                case 2:
-                    putchar('O');
-                    break;
-                default:
-                    putchar(' ');
-            }
+        for (int x = 0; x < BOARD_WIDTH; x++) {
+            if (!game.board[x][y]) putchar(' ');
+            else putchar(X_OR_O(game.board[x][y]));
             putchar('|');
         }
         putchar('\n');
     }
 
     // draw bottom border
-    for (x = 0; x < BOARD_WIDTH; x++) {
+    for (int x = 0; x < BOARD_WIDTH; x++)
         printf("==");
-    }
+
     puts("=");
 
     // draw column numbers
     putchar(' ');
-    for (x = 0; x < BOARD_WIDTH; x++) {
+
+    for (int x = 0; x < BOARD_WIDTH; x++)
         printf("%d ", x + 1);
-    }
+
     putchar('\n');
 
 }
@@ -72,9 +61,7 @@ void showBoard()
 
 bool validateMove(int col)
 {
-    if (col < 1 || col > BOARD_WIDTH) {
-        return 0;
-    }
+    if (col < 1 || col > BOARD_WIDTH) return 0;
 
     return game.board[col - 1][BOARD_HEIGHT - 1] == 0;
 }
@@ -88,8 +75,7 @@ int getMove()
     int col = 0;
 
     while (!validateMove(col)) {
-        printf("\nMove %c (Control-D to quit): ",
-               game.currentPlayer == 1 ? 'X' : 'O');
+        printf("\nMove %c (Control-D to quit): ", X_OR_O(game.currentPlayer));
         if (fgets(move, 254, stdin) == NULL) exit(0);
         col = atoi(move);
     }
@@ -125,7 +111,6 @@ int findWinner()
             if (game.board[x][y] == game.board[x + 1][y] &&
                 game.board[x][y] == game.board[x + 2][y] &&
                 game.board[x][y] == game.board[x + 3][y]) {
-                printf("horiz %d %d", x, y);
                 return game.board[x][y];
             }
 
@@ -133,7 +118,6 @@ int findWinner()
             if (game.board[x][y] == game.board[x][y + 1] &&
                 game.board[x][y] == game.board[x][y + 2] &&
                 game.board[x][y] == game.board[x][y + 3]) {
-                printf("vert %d %d", x, y);
                 return game.board[x][y];
             }
 
@@ -141,7 +125,6 @@ int findWinner()
             if (game.board[x][y] == game.board[x + 1][y + 1] &&
                 game.board[x][y] == game.board[x + 2][y + 2] &&
                 game.board[x][y] == game.board[x + 3][y + 3]) {
-                printf("diag %d %d", x, y);
                 return game.board[x][y];
             }
         }
@@ -153,7 +136,6 @@ int findWinner()
             if (game.board[x][y] == game.board[x - 1][y + 1] &&
                 game.board[x][y] == game.board[x - 2][y + 2] &&
                 game.board[x][y] == game.board[x - 3][y + 3]) {
-                printf("diag2 %d %d", x, y);
                 return game.board[x][y];
             }
         }
@@ -179,6 +161,6 @@ int main(int argc, char *argv[])
         game.currentPlayer = game.currentPlayer == 2 ? 1 : 2;
     }
 
-    printf("\nWinner = %c\n", winner == 1 ? 'X' : 'O');
+    printf("\nWinner = %c\n", X_OR_O(winner));
     return 0;
 }
