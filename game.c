@@ -1,4 +1,4 @@
-/* Connect 4
+/* Connect Four
  *
  * Terminal 2-player Connect Four game.
  *
@@ -8,7 +8,7 @@
  * Raises warnings if not compiled with a C89 or newer compiler.
  * Tested with GCC 5.1.
  *
- * Copyright (C) 2015 Joel Burton <joel@joelburton.com>.
+ * Copyright ©2015 Joel Burton <joel@joelburton.com>.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
 #include "game.h"
 
 
-typedef struct game {
+typedef struct _game {
     int board[BOARD_WIDTH][BOARD_HEIGHT];  // 0=empty, 1=X 2=O
-    int currentPlayer;                     // 1=X, 2=O
+    int currPlayer;                        // 1=X, 2=O
 } Game;
 
 Game game;
@@ -46,7 +46,7 @@ void startGame()
         for (int x = 0; x < BOARD_WIDTH; x++)
             game.board[x][y] = 0;
 
-    game.currentPlayer = 1;
+    game.currPlayer = 1;
 }
 
 
@@ -54,32 +54,31 @@ void startGame()
 
 void showBoard()
 {
-    putchar('\n');
+    printf("\n");
 
     for (int y = BOARD_HEIGHT - 1; y >= 0; y--) {
         putchar('|');
         for (int x = 0; x < BOARD_WIDTH; x++) {
-            if (!game.board[x][y]) putchar(' ');
-            else putchar(X_OR_O(game.board[x][y]));
+            if (!game.board[x][y])
+                putchar(' ');
+            else
+                putchar(X_OR_O(game.board[x][y]));
             putchar('|');
         }
-        putchar('\n');
+        printf("\n");
     }
 
     // draw bottom border
-    for (int x = 0; x < BOARD_WIDTH; x++)
-        printf("==");
-
-    puts("=");   // adds \n
+    for (int x = 0; x < BOARD_WIDTH * 2 + 1; x++)
+        printf("=");
 
     // draw column numbers
-    putchar(' ');
+    printf("\n ");
 
     for (int x = 0; x < BOARD_WIDTH; x++)
         printf("%d ", x + 1);
 
-    putchar('\n');
-
+    printf("\n");
 }
 
 
@@ -87,7 +86,8 @@ void showBoard()
 
 bool validateMove(int col)
 {
-    if (col < 1 || col > BOARD_WIDTH) return 0;
+    if (col < 1 || col > BOARD_WIDTH)
+        return 0;
 
     return game.board[col - 1][BOARD_HEIGHT - 1] == 0;
 }
@@ -101,8 +101,9 @@ int getMove()
     int col = 0;
 
     while (!validateMove(col)) {
-        printf("\nMove %c (Control-D to quit): ", X_OR_O(game.currentPlayer));
-        if (fgets(move, 254, stdin) == NULL) exit(0);
+        printf("\nMove %c (Control-D to quit): ", X_OR_O(game.currPlayer));
+        if (fgets(move, 254, stdin) == NULL)
+            exit(0);
         col = atoi(move);
     }
     return col;
@@ -115,7 +116,7 @@ void makeMove(int col)
 {
     for (int y = 0; y < BOARD_HEIGHT; y++) {
         if (game.board[col - 1][y] == 0) {
-            game.board[col - 1][y] = game.currentPlayer;
+            game.board[col - 1][y] = game.currPlayer;
             break;
         }
     }
@@ -138,7 +139,8 @@ int findWinner()
 
     for (int y = 0; y < BOARD_HEIGHT - 3; y++) {
         for (int x = 0; x < BOARD_WIDTH - 3; x++) {
-            if (!game.board[x][y]) continue;
+            if (!game.board[x][y])
+                continue;
 
             // horiz
             if (game.board[x][y] == game.board[x + 1][y] &&
@@ -168,7 +170,8 @@ int findWinner()
         // to skip bounds checks)
 
         for (int x = 3; x < BOARD_WIDTH; x++) {
-            if (!game.board[x][y]) continue;
+            if (!game.board[x][y])
+                continue;
 
             // "\"
             if (game.board[x][y] == game.board[x - 1][y + 1] &&
@@ -196,7 +199,7 @@ int main(int argc, char *argv[])
         makeMove(move);
         showBoard();
         winner = findWinner();
-        game.currentPlayer = game.currentPlayer == 2 ? 1 : 2;
+        game.currPlayer = (game.currPlayer == 2 ? 1 : 2);  // 1 => 2 => 1...
     }
 
     printf("\nWinner = %c\n", X_OR_O(winner));
